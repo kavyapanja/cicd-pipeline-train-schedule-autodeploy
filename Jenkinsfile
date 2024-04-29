@@ -8,13 +8,13 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ambatilokesh/myimage .'  // Build the Docker image
+                sh 'docker build -t ambatilokesh/mynewimage .'  // Build the Docker image
             }
         }
         stage('Push Docker Image to Docker Hub') {
             steps {
                 sh 'docker login -u ambatilokesh -p Lokesh@180900'
-                sh 'docker push ambatilokesh/myimage'  // Push the Docker image to Docker Hub
+                sh 'docker push ambatilokesh/mynewimage'  // Push the Docker image to Docker Hub
             }
         }
         stage('Deploy to Kubernetes') {
