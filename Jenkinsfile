@@ -17,13 +17,13 @@ pipeline {
                 sh 'docker push ambatilokesh/myimage'  // Push the Docker image to Docker Hub
             }
         }
-       /* stage('Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes') {
             steps {
                 // Apply a Kubernetes deployment configuration
                 sh '''
                 kubectl apply -f kubernetes/deployment.yaml  // Path to your Kubernetes deployment configuration
                 '''
             }
-        } */
+        } 
     }
 }
