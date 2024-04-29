@@ -8,20 +8,20 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ambatilokesh/mynewdocimage .'  
+                sh 'docker build -t ambatilokesh/mykubeimage .'  
             }
         }
         stage('Push Docker Image to Docker Hub') {
             steps {
                 sh 'docker login -u ambatilokesh -p Lokesh@180900'
-                sh 'docker push ambatilokesh/mynewdocimage' 
+                sh 'docker push ambatilokesh/mykubeimage' 
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
                 // Apply a Kubernetes deployment configuration
                 sh '''
-                kubectl apply -f kubernetes/deployment.yaml 
+                kubectl apply -f /home/ubuntu/deployment.yaml
                 '''
             }
         } 
