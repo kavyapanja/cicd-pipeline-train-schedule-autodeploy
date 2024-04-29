@@ -1,78 +1,28 @@
 pipeline {
     agent any
-    environment {
-        //be sure to replace "bhavukm" with your own Docker Hub username
-        DOCKER_IMAGE_NAME = "bhavukm/train-schedule"
-    }
     stages {
-        stage('Build') {
+        stage('Clone Repository') {
             steps {
-                echo 'Running build automation'
-                sh './gradlew build --no-daemon'
-                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
+                git 'https://github.com/kavyapanja/cicd-pipeline-train-schedule-autodeploy.git'  // Replace with your GitHub repository
             }
         }
         stage('Build Docker Image') {
-            when {
-                branch 'master'
-            }
             steps {
-                script {
-                    app = docker.build(DOCKER_IMAGE_NAME)
-                    app.inside {
-                        sh 'echo Hello, World!'
-                    }
-                }
+                sh 'docker build -t ambatilokesh/myimage .'  // Build the Docker image
             }
         }
-     /*   stage('Push Docker Image') {
-            when {
-                branch 'master'
-            }
+        stage('Push Docker Image to Docker Hub') {
             steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        app.push("${env.BUILD_NUMBER}")
-                        app.push("latest")
-                    }
-                }
+                sh 'docker login -u ambatilokesh -p Lokesh@180900'
+                sh 'docker push ambatilokesh/myimage'  // Push the Docker image to Docker Hub
             }
         }
-        stage('CanaryDeploy') {
-            when {
-                branch 'master'
-            }
-            environment { 
-                CANARY_REPLICAS = 1
-            }
+       /* stage('Deploy to Kubernetes') {
             steps {
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-            }
-        }
-       stage('DeployToProduction') {
-            when {
-                branch 'master'
-            }
-            environment { 
-                CANARY_REPLICAS = 0
-            }
-            steps {
-                input 'Deploy to Production?'
-                milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube.yml',
-                    enableConfigSubstitution: true
-                )
+                // Apply a Kubernetes deployment configuration
+                sh '''
+                kubectl apply -f kubernetes/deployment.yaml  // Path to your Kubernetes deployment configuration
+                '''
             }
         } */
     }
